@@ -1,0 +1,187 @@
+E-COMMERCE RETURNS & FULFILMENT INTELLIGENCE
+
+Power BI Dashboard Development Plan:
+Executive Overview
+Returns & Refunds
+Delivery Performance
+Return Drivers
+Insights & Actions
+
+
+1. PRE-BUILD SQL DATA QUALITY CHECKS
+
+Before developing the dashboard, perform these five SQL checks.
+
+1. Item and Order Status: Check distinct values of "item_status" and "order_status" (SQL Sections 9.1 and 9.2) to confirm exact status names and the definition of cancelled items.
+2. Sales Validation: Check whether "item_total" includes returned and cancelled items to define Total Sales correctly.
+3. Discount Validation: Check "MAX(discount_pct)" to confirm whether discounts are stored as percentage points or fractions.
+4. Late Delivery Validation: Compare "is_late_delivery" with "actual_delivery_days > promised_delivery_days" to verify consistency.
+5. Missing Values: Calculate NULL percentages for "is_returned" and "is_late_delivery" for the Data Quality indicators.
+
+2. DASHBOARD STRUCTURE
+
+The dashboard will contain five pages, each answering a key business question.
+
+1. Executive Summary: How is the business performing, and where are the problems?
+2. Returns & Refunds: What is being returned, where, and why?
+3. Delivery & Fulfilment: Where are delivery promises being missed?
+4. Return Drivers: How are sellers, discounts, and payment methods associated with returns?
+5. Insights & Actions: What actions should the business take?
+
+3. PAGE-WISE DASHBOARD DESIGN
+
+PAGE 1: EXECUTIVE SUMMARY
+
+KPI Cards (6):
+
+- Total Sales
+- Total Orders
+- Total Customers
+- Average Order Value (AOV = Total Sales ÷ Distinct Orders)
+- Return Rate (%)
+- Late Delivery Rate (%)
+
+Charts (4):
+
+1. Monthly Sales (columns) and Return Rate (line) — Combo Chart.
+2. Sales by Category — Bar Chart, coloured by Return Rate.
+3. Top 10 States by Sales — Bar Chart or Map.
+4. Item Outcome Mix — 100% Stacked Bar Chart showing Delivered, Returned, and Cancelled items (SQL Section 9.1).
+
+Slicers: Date Range, Region, Category, Plus Member, and State dropdown.
+
+PAGE 2: RETURNS & REFUNDS
+
+KPI Cards (4):
+
+- Returned Items
+- Return Rate (%)
+- Total Refund
+- Average Refund Days
+
+Charts (4):
+
+1. Return Rate by Category — Sorted Bar Chart with Item Count in the tooltip.
+2. Top Return Reasons — Bar Chart, with "Not recorded" shown separately.
+3. Category vs Return Reason — Heatmap using a Matrix.
+4. Monthly Return Rate — Line Chart.
+
+Interactions: Tooltips and drill-through for Refund Mode, Return Status, and Refund Coverage (%).
+
+Slicers: Date, Region, Category, and Sub-category.
+
+PAGE 3: DELIVERY & FULFILMENT
+
+KPI Cards (4):
+
+- Late Delivery Rate (%)
+- Average Promised Days
+- Average Actual Days
+- Cancelled Items
+
+Charts (4):
+
+1. Late Delivery Rate by Courier — Bar Chart with an overall-average reference line.
+2. Promised vs Actual Delivery Days by Courier — Clustered Bar Chart.
+3. Courier vs Region Late Delivery Rate — Heatmap.
+4. Return Rate for Late vs On-time Deliveries — Column Chart.
+
+Tooltips: Monthly Late Delivery Rate, Cancellation Reasons, and Cancelled Orders (fully cancelled vs orders with any cancelled item).
+
+Slicers: Date, Courier, Region, and State.
+
+PAGE 4: RETURN DRIVERS
+
+KPI Cards (4):
+
+- Average Seller Rating
+- Average Discount (%)
+- High-risk Sellers
+- Sellers Meeting Minimum Volume
+
+Charts (4):
+
+1. Seller Rating vs Return Rate — Scatter Chart, with bubble size representing Sales.
+2. Top 10 High-risk Sellers — Table showing Item Count, Return Rate, Seller Rating, and Sales.
+3. Discount Bands — Sales columns and Return Rate line.
+4. Return Rate by Payment Method — Bookmark toggle to switch between Plus and Non-Plus analysis.
+
+High-risk Seller Rule:
+
+- Minimum 30 items.
+- Return Rate at least 5 percentage points above the overall Return Rate.
+- Seller Rating below 3.5.
+- Use What-if Parameters for thresholds where appropriate.
+
+This is a provisional analytical rule and should not be treated as a universal standard.
+
+Slicers: Date, Category, Region, and Seller Rating Range.
+
+PAGE 5: INSIGHTS & ACTIONS
+
+This page will contain no KPI cards and will be developed after analysing actual results.
+
+Three-column layout:
+
+- Left — Findings: 4–5 data-backed findings, each with actual numbers and item counts.
+- Middle — Recommendations: 4–5 recommendations linked to the findings, including the responsible owner and success measure.
+- Right — Limitations & Methodology: Explain definitions, data-quality limitations, and analytical assumptions.
+
+4. GLOBAL SLICERS
+
+- Sync Date Range, Region, and Category slicers across all pages.
+- Include one page-specific fourth slicer on each page, as defined above.
+- Use dropdown-style slicers.
+- Keep slicers in the same position, in one row below the header.
+- Add a "Reset Filters" button using a bookmark.
+
+5. LAYOUT AND DESIGN RULES
+
+Canvas and Layout
+
+- Canvas size: 16:9.
+- Margin: 16 px.
+- Header height: 56 px.
+- Header: Page title on the left and navigation buttons on the right.
+- Layout order: Header → Slicers → KPI Cards → 2 × 2 Chart Grid → Footer.
+- Maintain the same layout structure across all pages.
+
+Footer
+"Sales = recorded item_total, not profit. Rates use known flags only."
+
+Include a Data Quality strip showing:
+
+- Return Flag Known (%)
+- Late Delivery Flag Known (%)
+- Refund Coverage (%)
+
+Colours
+
+- Primary Blue: "#1F4E79"
+- Accent Blue: "#2E86C1"
+- Risk Red: "#D64545"
+- Positive Green: "#2E9E6B"
+- Neutral Grey: "#8A94A6"
+
+Formatting
+
+- Font: Segoe UI.
+- Display currency in ₹ lakhs/crores after confirming the currency and scale.
+- Display percentages to one decimal place.
+- Turn off unnecessary gridlines.
+- Use insight-style chart titles, such as "Return rate is highest in Fashion", only after actual results confirm the finding.
+
+6. INTERACTIONS AND ADVANCED FEATURES
+
+1. Drill-through: Enable detail views for Category, Courier, and Seller.
+2. Report Tooltips: Show small supporting charts when users hover over visuals.
+3. Conditional Formatting: Apply to heatmaps and rate-based visuals.
+4. Minimum Sample Rule: Use at least 30 items for rate comparisons to reduce misleading results from small groups.
+5. SQL Validation: Compare Page 1 KPI cards with the results from SQL Section 16.2.
+
+
+
+7. DEVELOPMENT ORDER
+
+1. Run SQL data-quality checks and build the data model, including a Date table, sort columns, and discount bands.
+2. Create all DAX measures in a dedicated Measures table.
